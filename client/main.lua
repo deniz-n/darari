@@ -22,30 +22,6 @@ AddEventHandler('Darariririri', function(playerNetId, maxDistance, soundFile, so
     end
 end)
 
---Citizen.CreateThread(function()
---	while true do
---		local sleep = 2000
---		local playerPed = PlayerPedId()
---		local cars = GetVehiclePedIsIn(playerPed, false)
---		local CurrentVehicle = GetVehiclePedIsUsing(playerPed)
---        local model = GetEntityModel(CurrentVehicle)
---        local modelName = GetDisplayNameFromVehicleModel(model)
---		for i = 1, #Config.WhitelistCars, 1 do
---			local xdxd = Config.WhitelistCars[i]
---			if IsPedInAnyVehicle(playerPed, true) then
---				if modelName == xdxd and cars then
---					print("wl car")
---					sleep = 5
---					if IsControlJustPressed(0, 303) then
---						print("u basıldı")
---						TriggerServerEvent("VerkocumDarari", Config.maxDistance, "arapkorna",Config.Volume)
---					end
---				end
---			end
---		end
---	Citizen.Wait(sleep)
---	end
---end)
 
 function isWhitelisted(car)
     for i=1, #Config.WhitelistedCars,1 do
@@ -62,18 +38,16 @@ Citizen.CreateThread(function()
 		Citizen.Wait(0)
 	end
 	while true do
+		local sleep = 2500
 		local playerPed = PlayerPedId()
-		local veh = GetVehiclePedIsIn(playerPed)
-		local props = ESX.Game.GetVehicleProperties(veh)
-			if IsControlJustPressed(0, 303) then
-				print("Pressed")
-				if isWhitelisted(string.lower(GetDisplayNameFromVehicleModel(props.model))) then
-					print("Whitelisted")
-					TriggerServerEvent("VerkocumDarari", Config.maxDistance, "arapkorna", Config.Volume)
-				else
-					exports['mythic_notify']:SendAlert('error', 'Bu araçta havalı korna yok.', 4500)
+		local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+				if isWhitelisted(string.lower(GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)))) then
+					sleep = 5
+					if IsControlJustPressed(0, 303) then
+						print("Pressed")
+						TriggerServerEvent("VerkocumDarari", Config.maxDistance, "arapkorna", Config.Volume)
+					end
 				end
-			end
-		Citizen.Wait(5)
+		Citizen.Wait(sleep)
 	end
 end)
